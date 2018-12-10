@@ -10,11 +10,14 @@ Etherium Cryptocurrency Real Time Prediction (ETH/USD)
 
 ## Requirements 
 
-Python 3.5.5 
+-Python 3.5+
 
 ```
-sudo apt install python3.5.5
+sudo apt install python3
+sudo apt install python3-pip
 ```
+
+Then install the libraries:
 
 ```
 pip3 install -r requirements.txt
@@ -22,11 +25,11 @@ pip3 install -r requirements.txt
 ```
 ## Ethereum Prediction 
 
-Run the server:
+-Run the server:
 
 ```
 python server.py
 
 ```
 
-server runs on http://localhost:5555
+-server runs on http://localhost:5555
