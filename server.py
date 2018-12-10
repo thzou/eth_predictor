@@ -55,8 +55,8 @@ import gc
 app = Flask(__name__, static_url_path='/static') 
 app.config['SECRET_KEY'] = 'I am a cryptocurrency predictor!'
 
-model = load_model('models/LSTM.h5')
-modelgru = load_model('models/GRU.h5')
+model = load_model('models/LSTM_Poloniex_5minutes_6_1.h5')
+modelgru = load_model('models/GRU_Poloniex_5minutes_6_1.h5')
 
 pred_df = pd.DataFrame()
 pred_df_past = pd.DataFrame()
