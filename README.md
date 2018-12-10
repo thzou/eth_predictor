@@ -1,12 +1,12 @@
 # eth_predictor
 
 **Author:** *Thanasis Zoumpekas*
+
 **e-mail:** *zoumpeka@e-ce.uth.gr*
 
 
 Etherium Cryptocurrency Real Time Prediction (ETH/USD)
 
-server run on http://localhost:5555
 
 ## Requirements 
 
@@ -25,3 +25,4 @@ python server.py
 
 ```
 
+server runs on http://localhost:5555
