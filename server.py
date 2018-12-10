@@ -2,13 +2,10 @@
 from __future__ import print_function
 from flask import Flask, render_template,request
 import sys
-
 from os import environ
-from flask import Flask
 import json
 import numpy as np
 import os
-
 import pandas as pd
 import urllib.request as urllib2
 import socket
@@ -20,8 +17,6 @@ from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense, Activation, Reshape, LeakyReLU
 from keras.callbacks import CSVLogger
 import tensorflow as tf
-from scipy.ndimage import imread
-import numpy as np
 import random
 from keras.layers import LSTM , GRU
 from keras.layers import Conv1D, MaxPooling1D
@@ -33,30 +28,22 @@ from keras.backend.tensorflow_backend import set_session
 from keras import optimizers
 import h5py
 from sklearn.preprocessing import MinMaxScaler
-import os
-import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-import h5py
 from flask import jsonify
 from json import encoder
 import datetime
-
 import plotly.offline as py
 import plotly.graph_objs as go
 import plotly.figure_factory as ff
-#py.init_notebook_mode(connected=True)
-
 import plotly
 import gc
-#from predictor_ETH import *
 
 
 #app = Flask(__name__)
 app = Flask(__name__, static_url_path='/static') 
 app.config['SECRET_KEY'] = 'I am a cryptocurrency predictor!'
 
-model = load_model('models/LSTM_Poloniex_5minutes_6_1.h5')
-modelgru = load_model('models/GRU_Poloniex_5minutes_6_1.h5')
+model = load_model('models/LSTM_model.h5')
+modelgru = load_model('models/GRU_model.h5')
 
 pred_df = pd.DataFrame()
 pred_df_past = pd.DataFrame()
@@ -86,7 +73,6 @@ def get_data():
 
 	df = df.iloc[-6:,:]
 	datatimes = df.Timestamp
-	#datas = df.Close
 
 	wa = df.Weighted_Average
 	datas1 = np.array(df.Close)
@@ -118,7 +104,7 @@ def plot():
 
 	actual = actual.drop_duplicates(subset='times',keep='last')
 
-	with h5py.File(''.join(['ethereum2015to2018-test.h5']), 'r') as hf:
+	with h5py.File(''.join(['ethereum_data.h5']), 'r') as hf:
 	    original_datas = hf['original_datas'].value
 
 	scaler = MinMaxScaler()
@@ -167,9 +153,6 @@ def plot():
 
 	output = pd.DataFrame(output)
 	output['times'] = list(outputtimes)
-	
-	#output = pd.DataFrame(output)
-	#output['times'] = output['times'] 
 	output.times = pd.to_datetime(output.times,unit='s')
 
 
@@ -181,8 +164,6 @@ def plot():
 	actual.times = pd.to_datetime(actual.times,unit='s')
 
 	print ('done', file = sys.stderr)
-	
-	#output['prediction'] = output['prediction']
 
 ####LSTM past prediction to append####
 	pred_df_past = pred_df_past.append(output)
