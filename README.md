@@ -1,6 +1,8 @@
 # eth_predictor
 
-**Author:** *thzou*
+**Author:** *Thanasis Zoumpekas*
+**e-mail:** *zoumpeka@e-ce.uth.gr*
+
 
 Etherium Cryptocurrency Real Time Prediction (ETH/USD)
 
