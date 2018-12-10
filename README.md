@@ -10,7 +10,11 @@ Etherium Cryptocurrency Real Time Prediction (ETH/USD)
 
 ## Requirements 
 
-Python 3.5+ 
+Python 3.5.5 
+
+```
+sudo apt install python3.5.5
+```
 
 ```
 pip3 install -r requirements.txt
