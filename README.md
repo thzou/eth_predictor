@@ -12,7 +12,7 @@ Ethereum Cryptocurrency Real Time Prediction (ETH/USD)
 
 ## Requirements 
 
-* Python 3.5+
+* Python 3.7+
 
 ```
 sudo apt install python3
