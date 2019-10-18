@@ -48,10 +48,14 @@ modelgru = load_model('models/GRU_model.h5')
 pred_df = pd.DataFrame()
 pred_df_past = pd.DataFrame()
 pred_df_pastgru = pd.DataFrame()
+buy_df_past = pd.DataFrame()
+sell_df_past = pd.DataFrame()
 fig = 0
 actual = pd.DataFrame()
 graphJSON = 0
 counter = 0
+check_empty_buy = 0 
+check_empty_sell = 0
 
 def get_data():
 
@@ -90,9 +94,11 @@ def plot():
 	datas ,datatimes, wa = get_data()
 	global pred_df_past
 	global pred_df_pastgru
+	global buy_df_past, sell_df_past
 	global fig
 	global actual
 	global graphJSON
+	global check_empty_buy, check_empty_sell
 
 
 	temp_actual = pd.DataFrame()	
@@ -175,9 +181,49 @@ def plot():
 	pred_df_pastgru = pred_df_pastgru.drop_duplicates(subset='times',keep='last')
 	outputgru = pred_df_pastgru
 
+	actualarr = np.array(actual['price'])
+
+	buy_df = pd.DataFrame(columns = ['times', 'price'])
+	sell_df = pd.DataFrame(columns = ['times', 'price'])
+
+	if (actualarr[-1] <= predicted_inverted):
+
+		buy_price = actualarr[-1].reshape(-1)
+		buy_time = actual.times.iloc[-1]
+		print ("BUY:\t",buy_price, buy_time)
+		buy_df={}
+		buy_df['price'] = list(buy_price)
+		buy_df = pd.DataFrame(buy_df)
+		buy_df['times'] = buy_time
+
+
+	if (actualarr[-1] > predicted_inverted):
+
+		sell_price = actualarr[-1].reshape(-1)
+		sell_time = actual.times.iloc[-1]
+		print("SELL:\t",sell_price, sell_time)
+		sell_df={}
+		sell_df['price'] = list(sell_price)
+		sell_df = pd.DataFrame(sell_df)
+		sell_df['times'] = sell_time
+		
+
+	buy_df_past = buy_df_past.append(buy_df)
+	buy_df_past = buy_df_past.drop_duplicates(subset='times',keep='last')
+	buy_df = buy_df_past
+
+	sell_df_past = sell_df_past.append(sell_df)
+	sell_df_past = sell_df_past.drop_duplicates(subset='times',keep='last')
+	sell_df = sell_df_past
+	
+
 	actual_chart = go.Scatter(x = actual['times'], y = actual['price'], name= 'Actual Price')
 	lstm_predict_chart = go.Scatter(x = output['times'], y = output['prediction'], name= 'LSTM Prediction Price',mode='lines+markers')
 	gru_predict_chart = go.Scatter(x = outputgru['times'], y = outputgru['prediction'], name= 'GRU Prediction Price',mode='lines+markers')
+
+	buy_chart = go.Scatter(x=buy_df['times'], y = buy_df['price'], name= 'BUY SIGNAL', mode = 'markers')
+	sell_chart = go.Scatter(x=sell_df['times'], y = sell_df['price'], name= 'SELL SIGNAL', mode = 'markers')
+
 	layout = go.Layout(
 	    title='Ethereum Real time Prediction',
 	    xaxis=dict(
@@ -197,7 +243,9 @@ def plot():
 	        )
 	    )
 	)
-	data = [actual_chart,lstm_predict_chart,gru_predict_chart]
+
+	data = [actual_chart,lstm_predict_chart,gru_predict_chart, buy_chart, sell_chart]
+
 	fig = go.Figure(data=data, layout=layout)
 
 	graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
@@ -214,10 +262,12 @@ def api_predict():
 	global pred_df
 	global pred_df_past
 	global pred_df_pastgru
+	global buy_df_past, sell_df_past
 	global fig
 	global actual
 	global graphJSON
 	global counter
+	global check_empty_buy, check_empty_sell
 
 	if (counter == 0):
 		graphJSON = plot()  #call the plot function once
