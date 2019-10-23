@@ -56,6 +56,11 @@ graphJSON = 0
 counter = 0
 check_empty_buy = 0 
 check_empty_sell = 0
+money = int(sys.argv[1])
+start_money = money
+coins = 0
+transactions = 0
+
 
 def get_data():
 
@@ -99,6 +104,7 @@ def plot():
 	global actual
 	global graphJSON
 	global check_empty_buy, check_empty_sell
+	global money, coins, transactions, start_money
 
 
 	temp_actual = pd.DataFrame()	
@@ -186,10 +192,13 @@ def plot():
 	buy_df = pd.DataFrame(columns = ['times', 'price'])
 	sell_df = pd.DataFrame(columns = ['times', 'price'])
 
-	if (actualarr[-1] <= predicted_inverted):
+	if ((actualarr[-1] <= predicted_inverted) & (money > 0) ):
+
 
 		buy_price = actualarr[-1].reshape(-1)
 		buy_time = actual.times.iloc[-1]
+		coins = coins + money/buy_price
+		transactions = transactions + 1 
 		print ("BUY:\t",buy_price, buy_time)
 		buy_df={}
 		buy_df['price'] = list(buy_price)
@@ -197,16 +206,28 @@ def plot():
 		buy_df['times'] = buy_time
 
 
-	if (actualarr[-1] > predicted_inverted):
+	if ((actualarr[-1] > predicted_inverted) & (coins > 0 )):
 
 		sell_price = actualarr[-1].reshape(-1)
 		sell_time = actual.times.iloc[-1]
+		money = money + coins*sell_price
+		coins = 0
+		transactions = transactions + 1
 		print("SELL:\t",sell_price, sell_time)
 		sell_df={}
 		sell_df['price'] = list(sell_price)
 		sell_df = pd.DataFrame(sell_df)
 		sell_df['times'] = sell_time
 		
+	end_money = money + coins*(actualarr[-1].reshape(-1))
+	profit = end_money - start_money
+
+	print("START MONEY:\t", start_money,"\n")
+	print("END MONEY:\t", end_money,"\n")
+	print("PROFIT:\t", profit,"\n")
+	print("TOTAL TRANSACTIONS:\t", transactions,"\n")
+
+
 
 	buy_df_past = buy_df_past.append(buy_df)
 	buy_df_past = buy_df_past.drop_duplicates(subset='times',keep='last')
