@@ -7,7 +7,7 @@
 
 Ethereum Cryptocurrency Real Time Prediction (ETH/USD)
 
-**More Info on paper:** [Cryptocurrency Analysis & Predictions utilizing Machine Learning](https://figshare.com/s/2b20112ec88bd085598c)
+**More Info on paper:** [Cryptocurrency Analysis & Predictions utilizing Machine Learning]()
 
 
 ## Requirements 
@@ -29,8 +29,10 @@ pip3 install -r requirements.txt
 
 * Run the server:
 
+Give as argument the starting amount of dollars you want to trade with. (for example 1000$)
+
 ```
-python server.py
+python server.py 1000
 
 ```
 
