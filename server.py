@@ -56,6 +56,10 @@ graphJSON = 0
 counter = 0
 check_empty_buy = 0 
 check_empty_sell = 0
+
+if (len(sys.argv)!= 2):
+	sys.exit("Please provide an amount of dollars to start!")
+
 money = int(sys.argv[1])
 start_money = money
 coins = 0
@@ -198,6 +202,7 @@ def plot():
 		buy_price = actualarr[-1].reshape(-1)
 		buy_time = actual.times.iloc[-1]
 		coins = coins + money/buy_price
+		money = 0 #spend all your money
 		transactions = transactions + 1 
 		print ("BUY:\t",buy_price, buy_time)
 		buy_df={}
@@ -211,7 +216,7 @@ def plot():
 		sell_price = actualarr[-1].reshape(-1)
 		sell_time = actual.times.iloc[-1]
 		money = money + coins*sell_price
-		coins = 0
+		coins = 0 #sell all your coins
 		transactions = transactions + 1
 		print("SELL:\t",sell_price, sell_time)
 		sell_df={}
@@ -224,6 +229,7 @@ def plot():
 
 	print("START MONEY:\t", start_money,"\n")
 	print("END MONEY:\t", end_money,"\n")
+	print("COINS:\t", coins,"\n")
 	print("PROFIT:\t", profit,"\n")
 	print("TOTAL TRANSACTIONS:\t", transactions,"\n")
 
