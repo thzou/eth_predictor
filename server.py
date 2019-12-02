@@ -57,10 +57,12 @@ counter = 0
 check_empty_buy = 0 
 check_empty_sell = 0
 
-if (len(sys.argv)!= 2):
-	sys.exit("Please provide an amount of dollars to start!")
+# if (len(sys.argv)!= 2):
+# 	sys.exit("Please provide an amount of dollars to start!")
 
-money = int(sys.argv[1])
+# money = int(sys.argv[1])
+money = float(input("Please provide an amount of dollars to start:\t"))
+
 start_money = money
 coins = 0
 transactions = 0
@@ -95,6 +97,46 @@ def get_data():
 
 	return datas ,datatimes ,wa
 
+def save_results_to_csv(actual, output, outputgru, buy_df, sell_df):
+
+	os.makedirs("data", exist_ok=True) #create folder data
+
+	actual_plotdata = pd.DataFrame(columns = ["Time", "Price"])
+	actual_plotdata.Time = actual['times']
+	#actual_plotdata.Timestamp = datetime.strptime(actual['times'], '%m/%d/%Y %H:%M:%S %p')
+	#actual_plotdata.Timestamp = int(datetime.datetime.timestamp(actual_plotdata.Time.values.astype('datetime64',copy=False)))
+	actual_plotdata.Price = actual['price']
+	actual_plotdata.to_csv("data/actual-plotdata.csv", index = False)
+
+	lstm_prediction_plotdata = pd.DataFrame(columns = ["Time", "Price"])
+	lstm_prediction_plotdata.Time = output['times']
+	#lstm_prediction_plotdata.Timestamp = datetime.strptime(output['times'], '%m/%d/%Y %H:%M:%S %p')
+	#lstm_prediction_plotdata.Timestamp = int(datetime.datetime.timestamp(lstm_prediction_plotdata.Time.values.astype('datetime64',copy=False)))
+	lstm_prediction_plotdata.Price = output['prediction']
+	lstm_prediction_plotdata.to_csv("data/lstm-prediction-plotdata.csv", index = False)
+
+	gru_prediction_plotdata = pd.DataFrame(columns = ["Time", "Price"])
+	gru_prediction_plotdata.Time = outputgru['times']
+	#gru_prediction_plotdata.Timestamp = datetime.strptime(outputgru['times'], '%m/%d/%Y %H:%M:%S %p')
+	#gru_prediction_plotdata.Timestamp = int(datetime.datetime.timestamp(gru_prediction_plotdata.Time.values.astype('datetime64',copy=False)))
+	gru_prediction_plotdata.Price = outputgru['prediction']
+	gru_prediction_plotdata.to_csv("data/gru-prediction-plotdata.csv", index = False)
+
+	buy_signal_plotdata = pd.DataFrame(columns = ["Time", "Price"])
+	buy_signal_plotdata.Time = buy_df['times']
+	#buy_signal_plotdata.Timestamp = datetime.strptime(buy_df['times'], '%m/%d/%Y %H:%M:%S %p')
+	#buy_signal_plotdata.Timestamp = int(datetime.datetime.timestamp(buy_signal_plotdata.Time.values.astype('datetime64',copy=False)))
+	buy_signal_plotdata.Price = buy_df['price']
+	buy_signal_plotdata.to_csv("data/buy-signals-plotdata.csv", index = False)
+
+	sell_signal_plotdata = pd.DataFrame(columns = ["Time", "Price"])
+	sell_signal_plotdata.Time = sell_df['times']
+	#sell_signal_plotdata.Timestamp = datetime.strptime(sell_df['times'], '%m/%d/%Y %H:%M:%S %p')
+	#sell_signal_plotdata.Timestamp = int(datetime.datetime.timestamp(sell_signal_plotdata.Time.values.astype('datetime64',copy=False)))
+	sell_signal_plotdata.Price = sell_df['price']
+	sell_signal_plotdata.to_csv("data/sell-signals-plotdata.csv", index = False)
+
+	
 
 @app.route('/plot')
 
@@ -273,6 +315,8 @@ def plot():
 
 	data = [actual_chart,lstm_predict_chart,gru_predict_chart, buy_chart, sell_chart]
 
+	save_results_to_csv(actual, output, outputgru, buy_df, sell_df)
+	
 	fig = go.Figure(data=data, layout=layout)
 
 	graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
@@ -280,7 +324,8 @@ def plot():
 	return graphJSON
 
 
-@app.route('/predictor')
+#@app.route('/predictor')
+@app.route('/')
 
 def api_predict():
 	print ('start', file = sys.stderr)
@@ -302,7 +347,7 @@ def api_predict():
 
 	return render_template('index.html', graphJSON=graphJSON)
 
-@app.route('/')
+#@app.route('/')
 def index():
 
 	website = api_predict()
