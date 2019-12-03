@@ -25,15 +25,16 @@ Then install the libraries:
 pip3 install -r requirements.txt
 
 ```
+
 ## Ethereum Prediction 
 
 * Run the server:
 
-Give as argument the starting amount of dollars you want to trade with. (for example 1000$)
+```
+python server.py
 
 ```
-python server.py 1000
 
-```
+You will be prompted to enter the start amount of money.
 
 * Server runs on http://localhost:5555
