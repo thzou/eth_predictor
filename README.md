@@ -2,12 +2,12 @@
 
 **Author:** *Thanasis Zoumpekas*
 
-**e-mail:** *zoumpeka@e-ce.uth.gr*
+**e-mail:** *thanasis.zoumpekas@ub.edu*
 
 
 Ethereum Cryptocurrency Real Time Prediction (ETH/USD)
 
-**More Info on paper:** [Cryptocurrency Analysis & Predictions utilizing Machine Learning]()
+**More Info on paper:** [ETH analysis and predictions utilizing deep learning](https://doi.org/10.1016/j.eswa.2020.113866)
 
 
 ## Requirements 
